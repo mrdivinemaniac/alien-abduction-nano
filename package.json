@@ -1,0 +1,16 @@
+{
+  "name": "nano-sheep",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "dependencies": {
+    "pixi.js": "^6.0.0"
+  },
+  "devDependencies": {
+    "parcel-bundler": "1.12.3"
+  }
+}
