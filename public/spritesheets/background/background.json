@@ -1,0 +1,33 @@
+{
+	"meta": {
+		"image": "background.png",
+		"size": {"w":1034,"h":653},
+		"scale": "1"
+	},
+	"frames": {
+		"mountains-front.png":
+		{
+			"frame": {"x":5,"y":5,"w":1024,"h":212},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":1024,"h":212},
+			"sourceSize": {"w":1024,"h":212}
+		},
+		"mountains-back.png":
+		{
+			"frame": {"x":5,"y":227,"w":1024,"h":211},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":1024,"h":211},
+			"sourceSize": {"w":1024,"h":211}
+		},
+		"fence.png":
+		{
+			"frame": {"x":5,"y":448,"w":128,"h":200},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":128,"h":200},
+			"sourceSize": {"w":128,"h":200}
+		}
+	}
+}
