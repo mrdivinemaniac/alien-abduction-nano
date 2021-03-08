@@ -1,19 +1,20 @@
 import * as PIXI from 'pixi.js'
+import { IObject } from '../../core/iobject'
+export class Sheep implements IObject {
+  private sprite: PIXI.AnimatedSprite
+  private _speed: number
 
-export class Sheep {
-  private sprite: PIXI.AnimatedSprite = new PIXI.AnimatedSprite(getTextures())
-  private speed: number = 1
-
-  constructor (width: number, height: number, x:number, y: number) {
+  constructor () {
+    this.sprite = new PIXI.AnimatedSprite([
+      PIXI.Texture.from(`sheep-walk-1.png`),
+      PIXI.Texture.from(`sheep-walk-2.png`)
+    ])
     this.sprite.anchor.x = 0
     this.sprite.anchor.y = 0
-    this.setDims(width, height)
-    this.setPosition(x, y)
-    this.setSpeed(1)
-    this.sprite.play()
+    this.speed = 1
   }
 
-  setDims (width: number, height: number) {
+  setSize (width: number, height: number) {
     this.sprite.width = width
     this.sprite.height = height
   }
@@ -23,39 +24,38 @@ export class Sheep {
     this.sprite.y = y
   }
 
-  getPosition () {
-    return {
-      x: this.sprite.x,
-      y: this.sprite.y
-    }
+  get x () {
+    return this.sprite.x
   }
 
-  setSpeed (speed) {
-    this.speed = speed
-    this.sprite.animationSpeed = 0.08 * this.speed
+  get y () {
+    return this.sprite.y
+  }
+
+  get width () {
+    return this.sprite.width
+  }
+
+  get height () {
+    return this.sprite.height
+  }
+
+  set speed (value: number) {
+    this._speed = value
+    this.sprite.animationSpeed = 0.08 * value
   }
 
   spawn (container: PIXI.Container) {
+    this.sprite.play()
     container.addChild(this.sprite)
   }
 
   despawn (container: PIXI.Container) {
+    this.sprite.stop()
     container.removeChild(this.sprite)
   }
 
-  move (delta: number) {
-    this.sprite.x -= this.speed * delta
+  update (delta: number) {
+    this.sprite.x -= this._speed * delta
   }
-}
-
-let textures: PIXI.Texture[]
-
-function getTextures () {
-  if (!textures) {
-    textures = [
-      PIXI.Texture.from(`sheep-walk-1.png`),
-      PIXI.Texture.from(`sheep-walk-2.png`)
-    ]
-  }
-  return textures
 }
