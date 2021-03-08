@@ -1,31 +1,37 @@
 import * as PIXI from 'pixi.js'
+import { IObject } from '../../core/iobject'
 import { Sheep } from '../sheep'
 
-export class Lane {
+export class Lane implements IObject {
   private sheeples: Sheep[] = []
-  private container: PIXI.Container = new PIXI.Container()
-  private dims: PIXI.Point
+  private container: PIXI.Container
+  private width: number
+  private height: number
 
-  spawn (
-    container: PIXI.Container,
-    x: number,
-    y: number,
-    width: number,
-    height: number
-  ) {
-    this.container.x = x
-    this.container.y = y
-    this.dims = new PIXI.Point(width, height)
+  constructor () {
+    this.container = new PIXI.Container()
+  }
+
+  spawn (container: PIXI.Container) {
     container.addChild(this.container)
   }
 
-  get isFull () {
-    return this.sheeples.length >= (this.dims.x / this.dims.y)
+  setSize (width: number, height: number) {
+    this.width = width
+    this.height = height
+  }
+
+  setPosition (x: number, y: number) {
+    this.container.x = x
+    this.container.y = y
   }
 
   spawnASheep (speed: number = 1) {
-    const newSheep = new Sheep(this.dims.y, this.dims.y, this.dims.x - this.dims.y, 0)
-    newSheep.setSpeed(speed)
+    const newSheep = new Sheep()
+    const sheepHeight = (newSheep.width / newSheep.height) * this.height
+    newSheep.setPosition(this.width - this.height, 0)
+    newSheep.setSize(sheepHeight, this.height)
+    newSheep.speed = speed
     this.sheeples.push(newSheep)
     newSheep.spawn(this.container)
   }
@@ -33,12 +39,11 @@ export class Lane {
   herdTheSheep (delta: number) {
     const sheepsInBounds = []
     this.sheeples.forEach(sheep => {
-      const currentPos = sheep.getPosition()
-      if (currentPos.x <= 0) {
+      if (sheep.x <= 0) {
         sheep.despawn(this.container)
       } else {
         sheepsInBounds.push(sheep)
-        sheep.move(delta)
+        sheep.update(delta)
       }
     })
     this.sheeples = sheepsInBounds
