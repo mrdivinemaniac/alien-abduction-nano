@@ -1,18 +1,21 @@
 import * as PIXI from 'pixi.js'
 import { randIntBetween } from '../../utils'
+import { Background } from './objects/background';
 import { Lane } from './objects/lane'
 
 class Engine {
   private app: PIXI.Application;
   private assetsLoaded: boolean = false
   private lanes: Lane[] = []
+  private background: Background
 
   constructor () {
     this.app = new PIXI.Application({
       width: document.body.clientWidth,
       height: document.body.clientHeight,
-      backgroundColor: 0x1099bb,
-      resolution: window.devicePixelRatio || 1
+      backgroundColor: 0x00bfff,
+      autoDensity: true,
+      resolution: window.devicePixelRatio || 1 
     })
   }
 
@@ -20,7 +23,12 @@ class Engine {
     return new Promise<void>((resolve, reject) => {
       console.info('Loading Assets')
       this.app.loader
-        .add('spritesheet', 'spritesheets/sheep-walk/sheep-walk.json')
+        .add('sheep-spritesheet', 'spritesheets/sheep-walk/sheep-walk.json')
+        .add('grass-texture-3', 'textures/grass.png')
+        .add('windmill', 'spritesheets/windmill/windmill.json')
+        .add('background', 'spritesheets/background/background.json')
+        .add('cloud', 'textures/cloud.png')
+        .add('sun', 'textures/sun.png')
         .load(() => {
           console.info('Assets Loaded')
           this.assetsLoaded = true
@@ -35,25 +43,44 @@ class Engine {
     }
   }
 
-  private initialize () {
-    const laneHeight = 60
-    const laneGap = laneHeight * 0.3
-    const laneAreaHeight = this.app.screen.height * 0.4
-    const numLanes = laneAreaHeight / laneGap
-    const laneDrawStart = this.app.screen.height * 0.3 // Start the lanes at 30% of screen
+  private initBackground (width: number, skyHeight: number, meadowHeight: number) {
+    const background = new Background(width, skyHeight, meadowHeight)
+    background.spawn(this.app.stage)
+    this.background = background
+  }
+
+  private initLanes (width: number, meadowHeight: number, laneStartY: number) {
+    // TODO: smarter lane heights for vertical screens
+    // Aim for X number of sheeps on the screen
+    // Adjust width and height accordingly
+    const laneHeight = meadowHeight / 3
+    const laneGap = laneHeight * 0.2
+    const numLanes = (meadowHeight - laneHeight) / laneGap
+
     for (let i = 0; i < numLanes; ++i) {
       const lane = new Lane()
-      lane.spawn(this.app.stage, 0, laneDrawStart + i * laneGap, this.app.screen.width, laneHeight)
+      lane.setSize(width, laneHeight)
+      lane.setPosition(0, laneStartY + i * laneGap)
+      lane.spawn(this.app.stage)
       this.lanes.push(lane)
     }
+  }
 
-    document.body.appendChild(this.app.view)
+  private initialize () {
+    const width = this.app.screen.width
+    const meadowHeight = this.app.screen.height * 0.35
+    const skyHeight = this.app.screen.height - meadowHeight
+    this.initBackground(width, skyHeight, meadowHeight)
+    this.initLanes(width, meadowHeight, skyHeight * 0.95)
   }
 
   start () {
     this.checkAssetsLoaded()
     this.initialize()
+    document.body.appendChild(this.app.view)
+
     this.app.ticker.add(delta => {
+      this.background.update(delta)
       this.lanes.forEach(lane => lane.herdTheSheep(delta))
     })
   }
