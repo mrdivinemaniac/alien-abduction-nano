@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js'
 import { randIntBetween } from '../../utils'
-import { Background } from './objects/background';
+import { preloadAssets } from './assets'
+import { Background } from './objects/background'
 import { Lane } from './objects/lane'
 
 class Engine {
@@ -19,22 +20,9 @@ class Engine {
     })
   }
 
-  loadAssets () {
-    return new Promise<void>((resolve, reject) => {
-      console.info('Loading Assets')
-      this.app.loader
-        .add('sheep-spritesheet', 'spritesheets/sheep-walk/sheep-walk.json')
-        .add('grass-texture-3', 'textures/grass.png')
-        .add('windmill', 'spritesheets/windmill/windmill.json')
-        .add('background', 'spritesheets/background/background.json')
-        .add('cloud', 'textures/cloud.png')
-        .add('sun', 'textures/sun.png')
-        .load(() => {
-          console.info('Assets Loaded')
-          this.assetsLoaded = true
-          resolve()
-        })
-    })
+  async loadAssets () {
+    await preloadAssets(this.app.loader)
+    this.assetsLoaded = true
   }
 
   private checkAssetsLoaded () {
