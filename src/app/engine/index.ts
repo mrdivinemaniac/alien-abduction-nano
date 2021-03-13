@@ -67,7 +67,6 @@ class Engine {
     this.ufo.setPosition(0, 0.1 * skyHeight)
     const ufoHeight = this.lanes[0].height
     const ufoWidth = (ufoHeight / this.ufo.height) * this.ufo.width
-    console.log({ ufoHeight, ufoWidth })
     this.ufo.setSize(ufoWidth, ufoHeight)
   }
 
