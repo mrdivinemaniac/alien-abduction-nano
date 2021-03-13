@@ -69,4 +69,12 @@ export class Background {
     this.windmill.rotate(delta)
     this.clouds.wander(delta)
   }
+
+  get skyHeight () {
+    return this.sky.height
+  }
+
+  get width () {
+    return this.container.width
+  }
 }
