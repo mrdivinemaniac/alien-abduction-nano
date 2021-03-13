@@ -5,8 +5,8 @@ import { Sheep } from '../sheep'
 export class Lane implements IObject {
   private sheeples: Sheep[] = []
   private container: PIXI.Container
-  private width: number
-  private height: number
+  private _width: number = 0
+  private _height: number = 0
 
   constructor () {
     this.container = new PIXI.Container()
@@ -17,8 +17,8 @@ export class Lane implements IObject {
   }
 
   setSize (width: number, height: number) {
-    this.width = width
-    this.height = height
+    this._width = width
+    this._height = height
   }
 
   setPosition (x: number, y: number) {
@@ -26,11 +26,13 @@ export class Lane implements IObject {
     this.container.y = y
   }
 
-  spawnASheep (speed: number = 1) {
+  spawnASheep (speed: number = 1, scale: number = 1) {
     const newSheep = new Sheep()
-    const sheepHeight = (newSheep.width / newSheep.height) * this.height
-    newSheep.setPosition(this.width - this.height, 0)
-    newSheep.setSize(sheepHeight, this.height)
+    const sheepWidth = (newSheep.width / newSheep.height) * this._height
+    const scaledWidth = sheepWidth * scale
+    const scaledHeight = this._height * scale
+    newSheep.setPosition(this._width - this._height, this._height - scaledHeight)
+    newSheep.setSize(scaledWidth, scaledHeight)
     newSheep.speed = speed
     this.sheeples.push(newSheep)
     newSheep.spawn(this.container)
@@ -47,5 +49,21 @@ export class Lane implements IObject {
       }
     })
     this.sheeples = sheepsInBounds
+  }
+
+  get x () {
+    return this.container.x
+  }
+
+  get y () {
+    return this.container.y
+  }
+
+  get width () {
+    return this._width
+  }
+
+  get height () {
+    return this._height
   }
 }
