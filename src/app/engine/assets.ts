@@ -10,6 +10,7 @@ export function preloadAssets (loader: PIXI.Loader) {
       .add('background', 'spritesheets/background/background.json')
       .add('cloud', 'textures/cloud.png')
       .add('sun', 'textures/sun.png')
+      .add('ufo.png', 'textures/ufo.png')
       .load(() => {
         console.info('Assets Loaded')
         resolve()
