@@ -77,19 +77,21 @@ export class UFOSheepSteal {
   private identifyTarget (lanes: Lane[]) {
     let laneWithTargetSheep: Lane
     let targetSheep: Sheep
-    lanes.forEach(lane => {
+    for (let i = lanes.length - 1; i >= 0; --i) {
+      const lane = lanes[i]
       const sheep = lane.getSheepAtPoint(this.focusedPoint)
       if (sheep) {
         laneWithTargetSheep = lane
         targetSheep = sheep
+        break
       }
-    })
+    }
     if (targetSheep) {
       targetSheep.stopMoving()
       this.targetSheep = targetSheep
       this.targetLane = laneWithTargetSheep
       this.targetPoint = new PIXI.Point(
-        clamp(this.targetLane.x + this.targetSheep.x, this.bounds.x, this.bounds.x + this.bounds.width),
+        clamp(this.targetLane.x + this.targetSheep.x + targetSheep.width / 2, this.bounds.x, this.bounds.x + this.bounds.width),
         clamp(this.targetLane.y + this.targetSheep.y, this.bounds.x, this.bounds.y + this.bounds.height)
       )
       this.state = STATE.MOVING_TO_TARGET
@@ -103,7 +105,7 @@ export class UFOSheepSteal {
     // Check if ufo reached the target
     if (this.ufo.isHovering()) {
       this.targetSheep.float(
-        this.targetLane.y - this.targetPoint.y - (this.ufo.height / 2) - (this.targetSheep.height / 2)
+        this.targetLane.y - this.targetPoint.y - (this.ufo.height / 2)
       )
       this.descriptionText = new PIXI.Text(this.targetSheep.description, {
         fill: '#FFFFFF',

@@ -36,7 +36,6 @@ export class Sheep implements IObject {
   setSize (width: number, height: number) {
     this.sprite.width = width
     this.sprite.height = height
-    this.sprite.anchor.set(0.5, 0.5)
   }
 
   setPosition (x: number, y: number) {
@@ -123,7 +122,8 @@ export class Sheep implements IObject {
     }
   }
 
-  hitTest (point: PIXI.Point) {
-    return point.x >= this.x && this.y >= this.y && point.x <= (this.x + this.width) && point.y <= (this.y + this.height)
+  containsPoint (point: PIXI.Point) {
+    const bounds = new PIXI.Rectangle(this.x, this.y, this.width, this.height)
+    return bounds.contains(point.x, point.y)
   }
 }
