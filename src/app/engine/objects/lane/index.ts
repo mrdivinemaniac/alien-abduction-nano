@@ -42,7 +42,7 @@ export class Lane implements IObject {
   herdTheSheep (delta: number) {
     const sheepsInBounds = []
     this.sheeples.forEach(sheep => {
-      if (sheep.x <= 0) {
+      if (sheep.x <= -sheep.width) {
         sheep.despawn(this.container)
       } else {
         sheepsInBounds.push(sheep)

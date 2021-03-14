@@ -15,7 +15,6 @@ const STATE = {
 export class UFOSheepSteal {
   private interaction: PIXI.InteractionManager
   private focusedPoint: PIXI.Point
-  private targetPoint: PIXI.Point
   private targetLane: Lane
   private targetSheep: Sheep
   private bounds: PIXI.Rectangle
@@ -87,40 +86,51 @@ export class UFOSheepSteal {
       }
     }
     if (targetSheep) {
-      targetSheep.stopMoving()
       this.targetSheep = targetSheep
       this.targetLane = laneWithTargetSheep
-      this.targetPoint = new PIXI.Point(
-        clamp(this.targetLane.x + this.targetSheep.x + targetSheep.width / 2, this.bounds.x, this.bounds.x + this.bounds.width),
-        clamp(this.targetLane.y + this.targetSheep.y, this.bounds.x, this.bounds.y + this.bounds.height)
-      )
       this.state = STATE.MOVING_TO_TARGET
-      this.ufo.moveTowards(this.targetPoint)
     } else {
       this.state = STATE.FREE_ROAM
     }
   }
 
   private moveToTarget () {
-    // Check if ufo reached the target
-    if (this.ufo.isHovering()) {
-      this.targetSheep.float(
-        this.targetLane.y - this.targetPoint.y - (this.ufo.height / 2)
-      )
-      this.descriptionText = new PIXI.Text(this.targetSheep.description, {
-        fill: '#FFFFFF',
-        stroke: '#000000',
-        strokeThickness: 2,
-        fontSize: 30
-      })
-      if (this.ufo.x < (((this.bounds.x + this.bounds.width) / 2) - (this.ufo.width / 2))) {
-        this.descriptionText.x = this.ufo.x + this.ufo.width
-      } else {
-        this.descriptionText.x = this.ufo.x - this.descriptionText.width
+    const targetX = this.targetLane.x + this.targetSheep.x + this.targetSheep.width / 2
+    const targetY = this.targetLane.y + this.targetSheep.y
+    const targetPoint = new PIXI.Point(
+      clamp(targetX, this.bounds.x, this.bounds.x + this.bounds.width),
+      clamp(targetY, this.bounds.x, this.bounds.y + this.bounds.height)
+    )
+    if (this.bounds.x > targetX || (this.bounds.x + this.bounds.width) < targetX) {
+      this.state = STATE.FREE_ROAM
+      return
+    }
+    this.ufo.moveTowards(targetPoint)
+    const ufoXStart = this.ufo.x
+    const ufoXEnd = this.ufo.x + this.ufo.width
+    // Stop the target from moving if UFO is nearby
+    if (this.targetSheep.x >= ufoXStart && this.targetSheep.x <= ufoXEnd) {
+      this.targetSheep.stopMoving()
+
+      if (this.ufo.isHovering()) {
+        this.targetSheep.float(
+          this.targetLane.y - targetPoint.y - (this.ufo.height / 2)
+        )
+        this.descriptionText = new PIXI.Text(this.targetSheep.description, {
+          fill: '#FFFFFF',
+          stroke: '#000000',
+          strokeThickness: 2,
+          fontSize: 30
+        })
+        if (this.ufo.x < (((this.bounds.x + this.bounds.width) / 2) - (this.ufo.width / 2))) {
+          this.descriptionText.x = this.ufo.x + this.ufo.width
+        } else {
+          this.descriptionText.x = this.ufo.x - this.descriptionText.width
+        }
+        this.descriptionText.y = this.ufo.y + this.ufo.height / 2 - this.descriptionText.height / 2
+        this.container.addChild(this.descriptionText)
+        this.state = STATE.KIDNAP_TARGET
       }
-      this.descriptionText.y = this.ufo.y + this.ufo.height / 2 - this.descriptionText.height / 2
-      this.container.addChild(this.descriptionText)
-      this.state = STATE.KIDNAP_TARGET
     }
   }
 
