@@ -17,12 +17,16 @@ export class Sheep implements IObject {
   public _floatSpeed = 4
   private hoverer: Hover
   private state = STATE.MOVING
+  public description: string
+  public link: string
 
-  constructor () {
+  constructor (description: string, link: string) {
     this.sprite = new PIXI.AnimatedSprite([
       PIXI.Texture.from(`sheep-walk-1.png`),
       PIXI.Texture.from(`sheep-walk-2.png`)
     ])
+    this.description = description
+    this.link = link
     this.speed = 1
     this.hoverer = new Hover(this)
     this.hoverer.distance = 1

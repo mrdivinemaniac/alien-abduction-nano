@@ -21,8 +21,11 @@ export class UFOSheepSteal {
   private bounds: PIXI.Rectangle
   private ufo: UFO
   private state: number = STATE.FREE_ROAM
+  private container: PIXI.Container
+  private descriptionText: PIXI.Text
 
-  constructor (interaction: PIXI.InteractionManager, ufo: UFO) {
+  constructor (container: PIXI.Container, interaction: PIXI.InteractionManager, ufo: UFO) {
+    this.container = container
     this.interaction = interaction
     this.ufo = ufo
     this.updateFocusedPoint = this.updateFocusedPoint.bind(this)
@@ -35,7 +38,15 @@ export class UFOSheepSteal {
   }
 
   private updateFocusedPoint (e: PIXI.InteractionEvent) {
-    if (this.targetSheep) this.targetSheep.startMoving()
+    this.focusedPoint = e.data.global.clone()
+    if (this.targetSheep) {
+      this.targetSheep.startMoving()
+      this.targetSheep = undefined
+    }
+    if (this.descriptionText) {
+      this.container.removeChild(this.descriptionText)
+      this.descriptionText = undefined
+    }
     this.focusedPoint = e.data.global.clone()
     this.state = STATE.IDENTIFYING_TARGET
   }
@@ -91,12 +102,26 @@ export class UFOSheepSteal {
   private moveToTarget () {
     // Check if ufo reached the target
     if (this.ufo.isHovering()) {
-      this.targetSheep.float(this.targetLane.y - this.targetPoint.y - (this.ufo.height / 2) - (this.targetSheep.height / 2))
+      this.targetSheep.float(
+        this.targetLane.y - this.targetPoint.y - (this.ufo.height / 2) - (this.targetSheep.height / 2)
+      )
+      this.descriptionText = new PIXI.Text(this.targetSheep.description, {
+        fill: '#FFFFFF',
+        stroke: '#000000',
+        strokeThickness: 2,
+        fontSize: 30
+      })
+      if (this.ufo.x < (((this.bounds.x + this.bounds.width) / 2) - (this.ufo.width / 2))) {
+        this.descriptionText.x = this.ufo.x + this.ufo.width
+      } else {
+        this.descriptionText.x = this.ufo.x - this.descriptionText.width
+      }
+      this.descriptionText.y = this.ufo.y + this.ufo.height / 2 - this.descriptionText.height / 2
+      this.container.addChild(this.descriptionText)
       this.state = STATE.KIDNAP_TARGET
     }
   }
 
   private kidnapTarget () {
-    
   }
 }

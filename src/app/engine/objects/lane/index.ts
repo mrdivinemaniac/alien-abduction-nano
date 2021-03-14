@@ -26,8 +26,8 @@ export class Lane implements IObject {
     this.container.y = y
   }
 
-  spawnASheep (speed: number = 1, scale: number = 1) {
-    const newSheep = new Sheep()
+  spawnASheep (description: string, link: string, speed: number = 1, scale: number = 1) {
+    const newSheep = new Sheep(description, link)
     const sheepWidth = (newSheep.width / newSheep.height) * this._height
     const scaledWidth = sheepWidth * scale
     const scaledHeight = this._height * scale

@@ -23,7 +23,7 @@ class Engine {
       resolution: window.devicePixelRatio || 1 
     })
     this.ufo = new UFO()
-    this.ufoSheepSteal = new UFOSheepSteal(this.app.renderer.plugins.interaction, this.ufo)
+    this.ufoSheepSteal = new UFOSheepSteal(this.app.stage, this.app.renderer.plugins.interaction, this.ufo)
   }
 
   async loadAssets () {
@@ -86,9 +86,9 @@ class Engine {
     })
   }
 
-  spawnTheSheep (speed?: number, scale?: number) {
+  spawnTheSheep (description: string, link: string, speed?: number, scale?: number) {
     const chosenLane = this.lanes[randIntBetween(0, this.lanes.length)]
-    chosenLane.spawnASheep(speed, scale)
+    chosenLane.spawnASheep(description, link, speed, scale)
   }
 }
 

@@ -6,6 +6,6 @@ engine.loadAssets().then(() => {
   engine.start()
   setInterval(() => {
     const scale = randBetween(0.7, 1)
-    engine.spawnTheSheep(randBetween(1, 4), scale)
+    engine.spawnTheSheep('This is a sheep', 'http://sheep.com', randBetween(1, 4), scale)
   }, 100)
 })
