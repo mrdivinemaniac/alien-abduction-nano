@@ -1,16 +1,26 @@
 import * as PIXI from 'pixi.js'
 import { IObject } from '../../core/iobject'
+import { Hover } from '../../scripts/hover/hover'
+import { MoveTowards } from '../../scripts/move-towards'
+
+const STATE = {
+  MOVING: 1,
+  HOVERING: 2
+}
 
 export class UFO implements IObject {
   private sprite: PIXI.Sprite
-  public speed: number = 5
-  public hoverSpeed: number = 0.07
-  public hoverDistance: number = 3
-  private hoverUp: boolean = true
+  private speed: number = 5
+  private mover: MoveTowards
+  private hoverer: Hover
+  private state: number = STATE.HOVERING
 
   constructor () {
     const texture = PIXI.Texture.from('textures/ufo.png')
     this.sprite = new PIXI.Sprite(texture)
+    this.mover = new MoveTowards(this)
+    this.mover.speed = this.speed
+    this.hoverer = new Hover(this)
   }
 
   setPosition(x: number, y: number): void {
@@ -43,32 +53,25 @@ export class UFO implements IObject {
     container.addChild(this.sprite)
   }
 
-  moveTowards (delta: number, x: number, y: number) {
-    const targetX = x - this.width / 2
-    const targetY = y - this.height / 2
-    const distX = targetX - this.sprite.x
-    const distY = targetY - this.sprite.y
-    const snapXDist = this.speed
-    const snapYDist = Math.max(this.speed, this.hoverDistance + 1)
-    // Move towards cursor in X Axis
-    if (Math.abs(distX) >= snapXDist) {
-      const dir = distX > 0 ? 1 : -1
-      this.sprite.x += this.speed * dir * delta
-      // Snap to cursor X position if nearby
-      if (Math.abs(this.sprite.x - targetX) <= snapXDist) this.sprite.x = targetX
+  update (delta: number) {
+    if (this.state === STATE.MOVING) {
+      const moved = this.mover.update(delta)
+      if (!moved) {
+        this.state = STATE.HOVERING
+        this.hoverer.reset()
+      }
+    } else if (this.state === STATE.HOVERING) {
+      this.hoverer.update(delta)
     }
-    // Move towards cursor in Y Axis
-    if (Math.abs(distY) >= snapYDist) {
-      const dir = distY > 0 ? 1 : -1
-      this.sprite.y += this.speed * dir * delta
-      // Snap to cursor Y position if nearby
-      if (Math.abs(this.sprite.y - targetY) <= snapYDist) this.sprite.y = targetY
-    } else {
-      // If ufo didn't move vertically, play the hover animation
-      const absDist = Math.abs(this.sprite.y - targetY)
-      if (absDist > this.hoverDistance) this.hoverUp = !this.hoverUp
-      const hoverDir = this.hoverUp ? -1 : 1
-      this.sprite.y += hoverDir * this.hoverSpeed * delta
-    }    
+  }
+
+  moveTowards (target: PIXI.Point) {
+    if (this.mover.target && this.mover.target.equals(target)) return
+    this.mover.target = target
+    this.state = STATE.MOVING
+  }
+
+  isHovering () {
+    return this.state === STATE.HOVERING
   }
 }
