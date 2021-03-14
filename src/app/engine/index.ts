@@ -1,16 +1,18 @@
 import * as PIXI from 'pixi.js'
-import { clamp, randIntBetween } from '../../utils'
+import { randIntBetween } from '../../utils'
 import { preloadAssets } from './assets'
 import { Background } from './objects/background'
 import { Lane } from './objects/lane'
 import { UFO } from './objects/ufo'
+import { UFOSheepSteal } from './scripts/ufo-sheep-steal'
 
 class Engine {
-  private app: PIXI.Application;
+  private app: PIXI.Application
   private assetsLoaded: boolean = false
   private lanes: Lane[] = []
   private ufo: UFO
   private background: Background
+  private ufoSheepSteal: UFOSheepSteal
 
   constructor () {
     this.app = new PIXI.Application({
@@ -21,6 +23,7 @@ class Engine {
       resolution: window.devicePixelRatio || 1 
     })
     this.ufo = new UFO()
+    this.ufoSheepSteal = new UFOSheepSteal(this.app.renderer.plugins.interaction, this.ufo)
   }
 
   async loadAssets () {
@@ -68,20 +71,16 @@ class Engine {
     const ufoHeight = this.lanes[0].height
     const ufoWidth = (ufoHeight / this.ufo.height) * this.ufo.width
     this.ufo.setSize(ufoWidth, ufoHeight)
+    this.ufoSheepSteal.setBounds(new PIXI.Rectangle(0, 0, this.app.screen.width, this.background.skyHeight * 0.5))
   }
 
   start () {
     this.checkAssetsLoaded()
     this.initialize()
     document.body.appendChild(this.app.view)
-
     this.app.ticker.add(delta => {
-      const mouseposition = this.app.renderer.plugins.interaction.mouse.global
-      this.ufo.moveTowards(
-        delta,
-        clamp(mouseposition.x, 0, this.app.screen.width),
-        clamp(mouseposition.y, 0, this.background.skyHeight * 0.7)
-      )
+      this.ufo.update(delta)
+      this.ufoSheepSteal.update(delta, this.lanes)
       this.background.update(delta)
       this.lanes.forEach(lane => lane.herdTheSheep(delta))
     })

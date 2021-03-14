@@ -32,6 +32,7 @@ export class Lane implements IObject {
     const scaledWidth = sheepWidth * scale
     const scaledHeight = this._height * scale
     newSheep.setPosition(this._width - this._height, this._height - scaledHeight)
+    newSheep.setGroundPosition(this._height - scaledHeight)
     newSheep.setSize(scaledWidth, scaledHeight)
     newSheep.speed = speed
     this.sheeples.push(newSheep)
@@ -49,6 +50,13 @@ export class Lane implements IObject {
       }
     })
     this.sheeples = sheepsInBounds
+  }
+
+  getSheepAtPoint (point: PIXI.Point) {
+    return this.sheeples.find(sheep => {
+      const rectArea = new PIXI.Rectangle(sheep.x, sheep.y, sheep.width, sheep.height)
+      return rectArea.contains(point.x - this.x, point.y - this.y)
+    })
   }
 
   get x () {
