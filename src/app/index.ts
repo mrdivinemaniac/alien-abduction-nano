@@ -2,9 +2,12 @@ import { randBetween } from '../utils'
 import { nanoPrettify } from 'nano-prettify'
 import { NanoDataSource, ConfirmationDataT } from './data-sources/nano'
 import { initializeEngine } from './engine'
+import * as UI from './UI'
 
 const engine = initializeEngine()
 engine.loadAssets().then(() => {
+  UI.hideLoadingBannner()
+  UI.showInfo()
   engine.start()
   const nanoDataSource = new NanoDataSource()
   nanoDataSource.onConfirmation(data => {
