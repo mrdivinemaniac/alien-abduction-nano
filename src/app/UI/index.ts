@@ -1,13 +1,36 @@
+const aboutButton = document.querySelector('#about-button') as HTMLSpanElement
+const banner = document.querySelector('#loading-banner') as HTMLDivElement
+const info = document.querySelector('#info') as HTMLDivElement
+const aboutFull = document.querySelector('#about-full') as HTMLDivElement
+
+aboutButton.addEventListener('click', toggleAbout)
+
+function toggleAbout (e: Event) {
+  if (aboutFull.classList.contains('visible')) {
+    hide(aboutFull)
+    aboutButton.classList.remove('expanded')
+    aboutButton.innerText = '🤔 About'
+  } else {
+    show(aboutFull)
+    aboutButton.innerText = '❎ About'
+    aboutButton.classList.add('expanded')
+  }
+}
+
 export function hideLoadingBannner () {
-  const banner = document.querySelector('#loading-banner') as HTMLDivElement
-  banner.style.opacity = '0'
-  banner.style.pointerEvents = 'none'
-  setTimeout(() => {
-    banner.parentElement.removeChild(banner)
-  }, 1000)
+  hide(banner)
 }
 
 export function showInfo () {
-  const info = document.querySelector('#info') as HTMLDivElement
-  info.style.opacity = '1'
+  show(info)
+}
+
+function hide (elem: HTMLElement) {
+  elem.classList.add('hidden')
+  elem.classList.remove('visible')
+}
+
+function show (elem: HTMLElement) {
+  elem.classList.remove('hidden')
+  elem.classList.add('visible')
 }
