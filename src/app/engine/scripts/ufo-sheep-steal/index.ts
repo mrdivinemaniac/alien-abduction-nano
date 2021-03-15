@@ -28,8 +28,7 @@ export class UFOSheepSteal {
     this.interaction = interaction
     this.ufo = ufo
     this.updateFocusedPoint = this.updateFocusedPoint.bind(this)
-    interaction.on('touchstart', this.updateFocusedPoint)
-    interaction.on('mousedown',this.updateFocusedPoint)
+    interaction.on('pointerdown', this.updateFocusedPoint)
   }
 
   setBounds (bounds: PIXI.Rectangle) {

@@ -48,8 +48,9 @@ body {
 #about {
   position: absolute;
   padding: 1rem;
+  box-sizing: border-box;
   font-size: 1.5rem;
-  overflow: hidden;
+  width: 100%;
 }
 
 #creator-credit {
@@ -57,6 +58,7 @@ body {
 }
 
 #about-full {
+  position: absolute;
   background: #FFFFFF;
   padding: 1rem;
   border-radius: 0 1rem 1rem 1rem;
