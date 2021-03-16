@@ -14,7 +14,7 @@ engine.loadAssets().then(() => {
     const { amount, unit } = convertToSuitableUnit(data.amount)
     engine.spawnTheSheep(
       generateDescription(data.type, `${amount} ${unit}`),
-      'http://sheep.com',
+      generateCrawlerLink(data.blockHash),
       determineSpeed(amount, unit),
       determineSize(amount, unit)
     )
@@ -24,6 +24,10 @@ engine.loadAssets().then(() => {
 function generateDescription (type: ConfirmationDataT['type'], amount: string) {
   const action = type === 'send' ? 'sent' : 'received'
   return `Someone ${action}\n${amount}`
+}
+
+function generateCrawlerLink (hash: string) {
+  return `https://nanocrawler.cc/explorer/block/${hash}`
 }
 
 function convertToSuitableUnit (amount: string) {

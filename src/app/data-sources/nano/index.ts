@@ -48,7 +48,7 @@ export class NanoDataSource {
         account: message.account,
         amount: message.amount,
         type: message.block.subtype,
-        blockHash: message.block.link
+        blockHash: message.hash
       })
     }
   }

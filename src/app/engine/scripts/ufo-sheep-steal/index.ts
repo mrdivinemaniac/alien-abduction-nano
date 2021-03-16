@@ -1,9 +1,11 @@
 import * as PIXI from 'pixi.js'
 import { Lane } from '../../objects/lane'
 import { UFO } from '../../objects/ufo'
-import { clamp } from '../../../../utils'
-import { Point } from 'pixi.js'
+import { clamp, openLink } from '../../../../utils'
+import { Point, Rectangle } from 'pixi.js'
 import { Sheep } from '../../objects/sheep'
+
+const TEXT_PADDING = 15
 
 const STATE = {
   FREE_ROAM: 1,
@@ -21,7 +23,7 @@ export class UFOSheepSteal {
   private ufo: UFO
   private state: number = STATE.FREE_ROAM
   private container: PIXI.Container
-  private descriptionText: PIXI.Text
+  private descriptionText: PIXI.Container
 
   constructor (container: PIXI.Container, interaction: PIXI.InteractionManager, ufo: UFO) {
     this.container = container
@@ -37,13 +39,23 @@ export class UFOSheepSteal {
 
   private updateFocusedPoint (e: PIXI.InteractionEvent) {
     this.focusedPoint = e.data.global.clone()
+    if (this.descriptionText) {
+      const textHitArea = new Rectangle(
+        this.descriptionText.x,
+        this.descriptionText.y,
+        this.descriptionText.width,
+        this.descriptionText.height
+      )
+      if (textHitArea.contains(this.focusedPoint.x, this.focusedPoint.y)) {
+        openLink(this.targetSheep.link)
+        return
+      }
+      this.container.removeChild(this.descriptionText)
+      this.descriptionText = undefined
+    }
     if (this.targetSheep) {
       this.targetSheep.startMoving()
       this.targetSheep = undefined
-    }
-    if (this.descriptionText) {
-      this.container.removeChild(this.descriptionText)
-      this.descriptionText = undefined
     }
     this.focusedPoint = e.data.global.clone()
     this.state = STATE.IDENTIFYING_TARGET
@@ -110,22 +122,17 @@ export class UFOSheepSteal {
     // Stop the target from moving if UFO is nearby
     if (this.targetSheep.x >= ufoXStart && this.targetSheep.x <= ufoXEnd) {
       this.targetSheep.stopMoving()
-
       if (this.ufo.isHovering()) {
-        this.targetSheep.float(
-          this.targetLane.y - targetPoint.y - (this.ufo.height / 2)
-        )
-        this.descriptionText = new PIXI.Text(this.targetSheep.description, {
-          fill: '#FFFFFF',
-          stroke: '#000000',
-          strokeThickness: 2,
-          fontSize: 30
-        })
-        if (this.ufo.x < (((this.bounds.x + this.bounds.width) / 2) - (this.ufo.width / 2))) {
-          this.descriptionText.x = this.ufo.x + this.ufo.width
+        this.targetSheep.float(this.targetLane.y - targetPoint.y - (this.ufo.height / 2))
+        this.descriptionText = createTextContainer(this.targetSheep.description, this.targetSheep.link)
+        const rightBoundaryEdge = this.bounds.x + this.bounds.width
+        const halfOfBounds = rightBoundaryEdge / 2
+        if (this.ufo.x < halfOfBounds - (this.ufo.width / 2)) {
+          this.descriptionText.x = Math.min(this.ufo.x + this.ufo.width, rightBoundaryEdge - this.descriptionText.width)
         } else {
-          this.descriptionText.x = this.ufo.x - this.descriptionText.width
+          this.descriptionText.x = Math.max(this.ufo.x - this.descriptionText.width, this.bounds.x)
         }
+        // Align vertical centres of UFO and text
         this.descriptionText.y = this.ufo.y + this.ufo.height / 2 - this.descriptionText.height / 2
         this.container.addChild(this.descriptionText)
         this.state = STATE.KIDNAP_TARGET
@@ -135,4 +142,24 @@ export class UFOSheepSteal {
 
   private kidnapTarget () {
   }
+}
+
+function createTextContainer (text, link) {
+  const container = new PIXI.Container()
+  const description = new PIXI.Text(text, {
+    fill: '#000000',
+    fontSize: '2rem',
+  })
+  const details = new PIXI.Text('↗️ View on NanoCrawler', {
+    fill: '#333333',
+    fontSize: '1.5rem'
+  })
+  details.y = description.height + TEXT_PADDING
+  const background = new PIXI.Sprite(PIXI.Texture.WHITE)
+  background.width = Math.max(description.width, details.width) + TEXT_PADDING * 2
+  background.height = details.y + details.height + TEXT_PADDING * 2
+  background.x = -TEXT_PADDING
+  background.y = -TEXT_PADDING
+  container.addChild(background, description, details)
+  return container
 }

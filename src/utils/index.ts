@@ -11,3 +11,7 @@ export function clamp (value: number, min: number, max: number) {
   else if (value > max) return max
   return value
 }
+
+export function openLink (link: string) {
+  window.open(link, '_blank')
+}
