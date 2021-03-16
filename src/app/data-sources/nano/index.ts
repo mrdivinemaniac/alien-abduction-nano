@@ -9,20 +9,29 @@ export type ConfirmationDataT = {
 
 export class NanoDataSource {
   socket: WebSocket
-  confirmationCallback: (data: ConfirmationDataT) => any
+  private errorCb: (e: Error) => any
+  private confirmationCallback: (data: ConfirmationDataT) => any
 
   constructor () {
     this.handleSocketMessage = this.handleSocketMessage.bind(this)
     this.subscribeToConfirmations = this.subscribeToConfirmations.bind(this)
-    this.initializeSocket(URL)
-      .then(this.subscribeToConfirmations)
+  }
+
+  async connect () {
+    try {
+      await this.initializeSocket(URL)
+      return this.subscribeToConfirmations()
+    } catch (e) {
+      if (this.errorCb) this.errorCb(e)
+    }
   }
 
   private initializeSocket (url: string): Promise<WebSocket> {
+    console.info(`Connecting to ${url}`)
     const socket = new WebSocket(url)
     return new Promise((resolve, reject) => {
       socket.onopen = () => {
-        console.info(`Connection established with ${url}`)
+        console.info(`Connection established to ${url}`)
         this.socket = socket
         resolve(socket)
       }
@@ -51,6 +60,10 @@ export class NanoDataSource {
         blockHash: message.hash
       })
     }
+  }
+
+  onError (cb: (e: Error) => any) {
+    this.errorCb = cb
   }
 
   onConfirmation (cb: (data: ConfirmationDataT) => any) {

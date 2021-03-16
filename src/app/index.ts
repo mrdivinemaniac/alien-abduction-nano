@@ -4,8 +4,11 @@ import { NanoDataSource, ConfirmationDataT } from './data-sources/nano'
 import { initializeEngine } from './engine'
 import * as UI from './UI'
 
-const engine = initializeEngine()
-engine.loadAssets().then(() => {
+main()
+
+async function main () {
+  const engine = initializeEngine()
+  await engine.loadAssets()
   UI.hideLoadingBannner()
   UI.showInfo()
   engine.start()
@@ -19,7 +22,11 @@ engine.loadAssets().then(() => {
       determineSize(amount, unit)
     )
   })
-})
+  nanoDataSource.onError(e => {
+    window.alert('Oops! Something went wrong!')
+  })
+  await nanoDataSource.connect()
+}
 
 function generateDescription (type: ConfirmationDataT['type'], amount: string) {
   const action = type === 'send' ? 'sent' : 'received'
