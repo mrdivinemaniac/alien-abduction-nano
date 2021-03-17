@@ -1,0 +1,25 @@
+{
+	"meta": {
+		"image": "windmill.png",
+		"size": {"w":924,"h":1287},
+		"scale": "1"
+	},
+	"frames": {
+		"windmill-blades.png":
+		{
+			"frame": {"x":5,"y":5,"w":205,"h":1277},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":205,"h":1277},
+			"sourceSize": {"w":205,"h":1277}
+		},
+		"windmill-base.png":
+		{
+			"frame": {"x":220,"y":5,"w":699,"h":1191},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":699,"h":1191},
+			"sourceSize": {"w":699,"h":1191}
+		}
+	}
+}
