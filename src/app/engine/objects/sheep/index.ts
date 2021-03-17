@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js'
+import sound from 'pixi-sound'
 import { IObject } from '../../core/iobject'
 import { Hover } from '../../scripts/hover/hover'
+import { soundControl } from '../../sounds'
 
 const STATE = {
   MOVING: 1,
@@ -10,6 +12,18 @@ const STATE = {
   FLOATING_DOWN: 5
 }
 export class Sheep implements IObject {
+  static sounds = {
+    floatUp: sound.Sound.from({
+      url: 'sounds/sheep-liftoff.flac',
+      preload: true,
+      volume: 0.2
+    }),
+    floatDown: sound.Sound.from({
+      url: 'sounds/sheep-dropped.flac',
+      preload: true,
+      volume: 0.2
+    })
+  }
   private sprite: PIXI.AnimatedSprite
   private _speed: number
   private _floatHeight: number = 0
@@ -70,9 +84,12 @@ export class Sheep implements IObject {
 
   startMoving () {
     this.sprite.play()
-    this.state = (this.state !== STATE.STOPPED && this.state !== STATE.MOVING)
-      ? STATE.FLOATING_DOWN
-      : STATE.MOVING
+    if (this.state !== STATE.STOPPED && this.state !== STATE.MOVING) {
+      soundControl.play(Sheep.sounds.floatDown)
+      this.state = STATE.FLOATING_DOWN
+    } else {
+      this.state = STATE.MOVING
+    }
   }
 
   stopMoving () {
@@ -81,6 +98,7 @@ export class Sheep implements IObject {
   }
 
   float (floatHeight: number) {
+    soundControl.play(Sheep.sounds.floatUp)
     this.sprite.gotoAndStop(1)
     this.state = STATE.FLOATING_UP
     this._floatHeight = floatHeight
