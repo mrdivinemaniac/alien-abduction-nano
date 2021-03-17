@@ -2,6 +2,8 @@
 
 This is a transaction visualizer for the <a href='https://nano.org/' target='_blank'>NANO</a> Network created by using <a href='https://pixijs.io/' target='_blank'>PIXI.js</a>
 
+Live @ https://nano.sheep-abduction.tk
+
 ### Running Locally
 ```
 yarn start
@@ -28,3 +30,9 @@ The theme is inspired by <a href='https://allthetropes.fandom.com/wiki/Aliens_St
 - <a href='https://opengameart.org/content/skull-in-a-ufo-spacecraft' target='_blank'>UFO by bevouliin.com</a>
 - <a href='https://opengameart.org/content/seamless-grass-texture-ii' target='_blank'>Grass by athile</a>
 - <a href='https://opengameart.org/content/sheep-sound-bleats-yo-frankie' target='_blank'>Sheep Sounds by Blender Foundation</a>
+
+### My Nano Address
+
+nano_1oigrx88cuacdmkpjefyne1nt815tox4wgzt9osmxwwy9wd1jp19snwz9g9g
+
+![nano_1oigrx88cuacdmkpjefyne1nt815tox4wgzt9osmxwwy9wd1jp19snwz9g9g](nano_address_qr.png)
