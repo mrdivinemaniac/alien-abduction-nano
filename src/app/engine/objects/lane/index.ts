@@ -53,9 +53,12 @@ export class Lane implements IObject {
   }
 
   getSheepAtPoint (point: PIXI.Point) {
-    return this.sheeples.find(sheep => {
-      return sheep.containsPoint(new PIXI.Point(point.x - this.x, point.y - this.y))
-    })
+    const targetPoint = new PIXI.Point(point.x - this.x, point.y - this.y)
+    for (let i = this.sheeples.length - 1; i >= 0; --i) {
+      const sheep = this.sheeples[i]
+      if (sheep.containsPoint(targetPoint)) return sheep
+    }
+    return null
   }
 
   get x () {
