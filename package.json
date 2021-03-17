@@ -2,7 +2,7 @@
   "name": "nano-sheep",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT",
+  "license": "GNU GPLv3",
   "scripts": {
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html"
