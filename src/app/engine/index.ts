@@ -65,9 +65,9 @@ class Engine {
     const meadowHeight = this.app.screen.height * 0.35
     const skyHeight = this.app.screen.height - meadowHeight
     this.initBackground(width, skyHeight, meadowHeight)
-    this.initLanes(width, meadowHeight, skyHeight * 0.95)
     this.ufo.spawn(this.app.stage)
     this.ufo.setPosition(0, 0.1 * skyHeight)
+    this.initLanes(width, meadowHeight, skyHeight * 0.95)
     const ufoHeight = this.lanes[0].height
     const ufoWidth = (ufoHeight / this.ufo.height) * this.ufo.width
     this.ufo.setSize(ufoWidth, ufoHeight)

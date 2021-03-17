@@ -58,6 +58,7 @@ export class UFOSheepSteal {
       this.targetSheep = undefined
     }
     this.focusedPoint = e.data.global.clone()
+    this.ufo.disengageTractorBeam()
     this.state = STATE.IDENTIFYING_TARGET
   }
 
@@ -122,6 +123,7 @@ export class UFOSheepSteal {
     // Stop the target from moving if UFO is nearby
     if (this.targetSheep.x >= ufoXStart && this.targetSheep.x <= ufoXEnd) {
       this.targetSheep.stopMoving()
+      this.ufo.engageTractorBeam(this.targetLane.y - this.ufo.y - this.ufo.height + this.targetSheep.height * 0.7)
       if (this.ufo.isHovering()) {
         this.targetSheep.float(this.targetLane.y - targetPoint.y - (this.ufo.height / 2))
         this.descriptionText = createTextContainer(this.targetSheep.description, this.targetSheep.link)
