@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "nano-prettify": "^1.0.2",
+    "pixi-sound": "^3.0.5",
     "pixi.js": "^6.0.0"
   },
   "devDependencies": {
