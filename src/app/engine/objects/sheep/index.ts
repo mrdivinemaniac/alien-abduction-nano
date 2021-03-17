@@ -18,6 +18,16 @@ export class Sheep implements IObject {
       preload: true,
       volume: 0.2
     }),
+    bleet1: sound.Sound.from({
+      url: 'sounds/sheep-bleet-1.flac',
+      preload: true,
+      volume: 0.2
+    }),
+    bleet2: sound.Sound.from({
+      url: 'sounds/sheep-bleet-2.flac',
+      preload: true,
+      volume: 0.2
+    }),,
     floatDown: sound.Sound.from({
       url: 'sounds/sheep-dropped.flac',
       preload: true,
@@ -115,6 +125,12 @@ export class Sheep implements IObject {
   }
 
   spawn (container: PIXI.Container) {
+    const randNum = Math.random()
+    const doTheBleet = randNum < 0.1
+    if (doTheBleet) {
+      const sound = randNum < 0.05 ? Sheep.sounds.bleet1 : Sheep.sounds.bleet2
+      soundControl.play(sound)
+    }
     this.sprite.play()
     container.addChild(this.sprite)
   }
