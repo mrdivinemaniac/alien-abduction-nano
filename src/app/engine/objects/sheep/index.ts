@@ -86,6 +86,16 @@ export class Sheep implements IObject {
     this._floatHeight = floatHeight
   }
 
+  lockTarget () {
+    const sepiaFilter = new PIXI.filters.ColorMatrixFilter()
+    sepiaFilter.sepia(true)
+    this.sprite.filters = [sepiaFilter]
+  }
+
+  unlockTarget () {
+    this.sprite.filters = []
+  }
+
   spawn (container: PIXI.Container) {
     this.sprite.play()
     container.addChild(this.sprite)

@@ -55,6 +55,7 @@ export class UFOSheepSteal {
     }
     if (this.targetSheep) {
       this.targetSheep.startMoving()
+      this.targetSheep.unlockTarget()
       this.targetSheep = undefined
     }
     this.focusedPoint = e.data.global.clone()
@@ -99,6 +100,7 @@ export class UFOSheepSteal {
     }
     if (targetSheep) {
       this.targetSheep = targetSheep
+      this.targetSheep.lockTarget()
       this.targetLane = laneWithTargetSheep
       this.state = STATE.MOVING_TO_TARGET
     } else {
@@ -125,6 +127,7 @@ export class UFOSheepSteal {
       this.targetSheep.stopMoving()
       this.ufo.engageTractorBeam(this.targetLane.y - this.ufo.y - this.ufo.height + this.targetSheep.height * 0.7)
       if (this.ufo.isHovering()) {
+        this.targetSheep.unlockTarget()
         this.targetSheep.float(this.targetLane.y - targetPoint.y - (this.ufo.height / 2))
         this.descriptionText = createTextContainer(this.targetSheep.description, this.targetSheep.link)
         const rightBoundaryEdge = this.bounds.x + this.bounds.width
