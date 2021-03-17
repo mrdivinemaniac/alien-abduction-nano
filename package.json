@@ -1,11 +1,11 @@
 {
-  "name": "nano-sheep",
+  "name": "alien-abduction-nano",
   "version": "1.0.0",
   "main": "index.js",
   "license": "GNU GPLv3",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html"
+    "build": "rm -rf ./dist && parcel build src/index.html"
   },
   "staticFiles": {
     "staticPath": "public"
