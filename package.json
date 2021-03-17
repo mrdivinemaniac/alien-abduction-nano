@@ -1,6 +1,7 @@
 {
   "name": "alien-abduction-nano",
   "version": "1.0.0",
+  "author": "mrdivinemaniac",
   "main": "index.js",
   "license": "GNU GPLv3",
   "scripts": {
