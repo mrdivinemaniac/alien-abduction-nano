@@ -47,9 +47,9 @@ function convertToSuitableUnit (amount: string) {
 }
 
 function determineSpeed (amount: string, unit: string) {
-  if (unit === 'raw') return randBetween(3.5, 4)
-  else if (Number(amount) >= 1) return randBetween(2, 3)
-  else return randBetween(3, 3.5)
+  if (unit === 'raw') return randBetween(2.5, 3)
+  else if (Number(amount) >= 1) return randBetween(1, 2)
+  else return randBetween(2, 2.5)
 }
 
 function determineSize (amount: string, unit: string) {
